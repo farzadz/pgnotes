@@ -92,3 +92,29 @@ END;
 $$
     language 'plpgsql' STRICT;
 ```
+
+
+
+## Getting logs from Postgres RDS instance
+With an RDS instance named `mydb`:
+```bash
+aws rds describe-db-log-files --db-instance-identifier mydb --output text | cut -f 3
+```
+
+To store logs in a file called `pglogs.txt` in the current directory:
+```bash
+for filename in $(aws rds describe-db-log-files --db-instance-identifier mydb --output text | cut -f 3)
+do
+echo $filename
+aws rds download-db-log-file-portion --db-instance-identifier mydb --output text --no-paginate --log-file $filename >> ./pglogs.txt
+done
+```
+
+
+## Using pgbadger for log analysis
+Given that the `log_line_prefix` for RDS instances is `%t:%r:%u@%d:[%p]:` with a log 
+file `pglogs.txt` downloaded from AWS rds, the following line provides 
+pgbadger report in `pg.html`:
+```bash
+pgbadger -f stderr -p '%t:%r:%u@%d:[%p]:' ./pglogs.txt -o pg.html
+```
