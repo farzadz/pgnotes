@@ -235,3 +235,16 @@ Everything other than the backends that handle the connections
 
 ### Memory structures of Auxiliary Processes
 
+
+
+### psql useful commands
+Add `+` after commands for verbose mode:
+```sql
+\c              --show current database
+\c somedatabase --connect to somedatabase
+\l              --list all databases
+\dn             --list all schemas 
+\d              --list all tables
+\! shellCommand --executes some shell command
+
+```
